@@ -49,8 +49,8 @@
                     <tr>
                         <td>{{ $worker->name_worker }}</td>
                         <td>
-                            <input type="checkbox" name="workers[{{ $worker->id_worker }}]" value="1">
-                        </td>
+                            <input type="checkbox" name="workers[{{ $worker->id_worker }}][status_pres]" value="1" checked>                        
+                            <input type="hidden" name="workers[{{ $worker->id_worker }}][id_worker]" value="{{ $worker->id_worker }}">                        </td>
                     </tr>
                 @endforeach
                 <label for="tanggal"></label>

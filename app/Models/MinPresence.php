@@ -21,6 +21,6 @@ class MinPresence extends Model
     // Define the relationship to the Worker model
     public function worker()
     {
-        return $this->belongsTo(Worker::class, 'id_worker', 'id');
+        return $this->belongsTo(Worker::class, 'id_worker');
     }
 }

@@ -23,12 +23,14 @@ class PresenceController extends Controller
         }
         $month = Carbon::today()->month;
 
-        foreach ($request->input('workers') as $workerId => $status) {
+        foreach ($request->input('workers') as $workerData) {
+            $workerId = $workerData['id_worker'];
+            $statusPres = isset($workerData['status_pres']) ? true : false;
             MonthlyPresence::create([
                 'id_worker' => $workerId,
                 'date' => $today,
                 'no_month' => $month,
-                'status_pres' => $status ? true : false,
+                'status_pres' => $statusPres,
             ]);
         }
 

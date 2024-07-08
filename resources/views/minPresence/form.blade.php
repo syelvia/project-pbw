@@ -49,7 +49,7 @@
                     <tr>
                         <td>{{ $worker->name_worker }}</td>
                         <td>
-                            <input type="number" name="workers[{{ $worker->id }}]" min="0" required>
+                            <input type="number" name="workers[{{ $worker->id_worker }}]" min="0" required>
                         </td>
                     </tr>
                 @endforeach

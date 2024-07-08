@@ -64,8 +64,7 @@ class ReportController extends Controller
             $daysInMonth = Carbon::createFromDate(null, $month, 1)->daysInMonth;
 
             if ($minPresence && $presenceCount < $minPresence->min_pres) {
-                $wagePercentage = $presenceCount / $daysInMonth;
-                $adjustedWage = $worker->job->wage_job * $wagePercentage;
+                $adjustedWage = $worker->job->wage_job * $presenceCount / $daysInMonth;
             } else {
                 $adjustedWage = $worker->job->wage_job;
             }
