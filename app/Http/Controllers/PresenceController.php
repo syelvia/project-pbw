@@ -17,7 +17,10 @@ class PresenceController extends Controller
 
     public function recordPresence(Request $request)
     {
-        $today = Carbon::today()->toDateString();
+        $today = $request->input('date');
+        if (!$today){
+            $today = Carbon::today()->toDateString();
+        }
         $month = Carbon::today()->month;
 
         foreach ($request->input('workers') as $workerId => $status) {

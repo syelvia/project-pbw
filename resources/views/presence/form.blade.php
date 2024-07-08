@@ -53,6 +53,8 @@
                         </td>
                     </tr>
                 @endforeach
+                <label for="tanggal"></label>
+                <input type="date" name="date">
             </tbody>
         </table>
         <button type="submit" style="margin-top: 20px;">Submit</button>
