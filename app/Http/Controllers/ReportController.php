@@ -103,4 +103,44 @@ class ReportController extends Controller
         return view('reports.report', $data);
         //return response()->json($data);
     }
+    public function showGenerateReportsForm()
+    {
+        $jobs = Job::all(); // Assuming Job model exists
+        return view('reports.generate', compact('jobs'));
+    }
+
+    public function generateReports(Request $request)
+    {
+        // Handle filters
+        $floor = $request->input('floor');
+        $type = $request->input('type');
+        $month = $request->input('month');
+        $jobName = $request->input('job_name');
+        $format = $request->input('format'); // PDF, Excel, etc.
+
+        // Generate report based on the selected format
+        switch ($format) {
+            case 'pdf':
+                // Generate PDF report
+                return $this->generatePdfReport($floor, $type, $month, $jobName);
+                break;
+            default:
+                return back()->withErrors(['format' => 'Unsupported report format.']);
+        }
+    }
+
+    private function generatePdfReport($floor, $type, $month, $jobName)
+    {
+        // Logic to generate PDF report
+        // Example using Dompdf or similar library
+
+        $pdf = PDF::loadView('reports.report', [
+            'floor' => $floor,
+            'type' => $type,
+            'month' => $month,
+            'jobName' => $jobName,
+        ]);
+
+        return $pdf->download('report.pdf');
+    }
 }
