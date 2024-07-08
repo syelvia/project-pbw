@@ -10,6 +10,9 @@ use App\Models\Transaction;
 use App\Models\Worker;
 use App\Models\Job;
 use App\Exports\ReportExport;
+use App\Models\MonthlyPresence;
+use App\Models\MinPresence;
+use Carbon\Carbon;
 
 class ReportController extends Controller
 {
@@ -46,7 +49,29 @@ class ReportController extends Controller
             })
             ->get(['name_worker', 'id_job']);
 
-        $payroll = $payrollData->sum('job.wage_job');
+        $payroll = 0;
+
+        foreach ($payrollData as $worker) {
+            $presenceCount = MonthlyPresence::where('id_worker', $worker->id)
+                ->where('no_month', $month)
+                ->where('status_pres', true)
+                ->count();
+
+            $minPresence = MinPresence::where('id_worker', $worker->id)
+                ->where('no_month', $month)
+                ->first();
+
+            $daysInMonth = Carbon::createFromDate(null, $month, 1)->daysInMonth;
+
+            if ($minPresence && $presenceCount < $minPresence->min_pres) {
+                $wagePercentage = $presenceCount / $daysInMonth;
+                $adjustedWage = $worker->job->wage_job * $wagePercentage;
+            } else {
+                $adjustedWage = $worker->job->wage_job;
+            }
+
+            $payroll += $adjustedWage;
+        }
 
         // Profit
         $profit = $income - $payroll;
