@@ -73,11 +73,13 @@
         <tr>
             <th>Worker</th>
             <th>Job</th>
+            <th>Wage</th>
         </tr>
         @foreach ($payrollData as $worker)
         <tr>
             <td>{{ $worker->name_worker }}</td>
             <td>{{ $worker->job->name_job }}</td>
+            <td>Rp {{ number_format($wages[$worker->id_worker],2) }}</td>
         </tr>
         @endforeach
     </table>

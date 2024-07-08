@@ -68,10 +68,10 @@
     <script>
         function applyCommonMinPres() {
             var commonMinPres = document.getElementById('commonMinPres').value;
-            var inputs = document.getElementsByName('workers[]');
-            for (var i = 0; i < inputs.length; i++) {
-                inputs[i].value = commonMinPres;
-            }
+            var inputs = document.querySelectorAll('input[name^="workers["]');
+            inputs.forEach(function(input) {
+                input.value = commonMinPres;
+            });
         }
     </script>
 </body>

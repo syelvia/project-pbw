@@ -21,6 +21,9 @@ class ReportController extends Controller
         $floor = $request->input('floor');
         $type = $request->input('type');
         $month = $request->input('month');
+        if(!$month){
+            $month = Carbon::today()->month;
+        }
         $jobName = $request->input('job_name');
 
         // Detailed Income Report Data
@@ -47,27 +50,29 @@ class ReportController extends Controller
                     $query->where('name_job', $jobName);
                 }
             })
-            ->get(['name_worker', 'id_job']);
+            ->get(['id_worker','name_worker', 'id_job']);
 
         $payroll = 0;
+        $wages=[];
 
         foreach ($payrollData as $worker) {
-            $presenceCount = MonthlyPresence::where('id_worker', $worker->id)
+            $presenceCount = MonthlyPresence::where('id_worker', $worker->id_worker)
                 ->where('no_month', $month)
                 ->where('status_pres', true)
                 ->count();
 
-            $minPresence = MinPresence::where('id_worker', $worker->id)
+            $minPresence = MinPresence::where('id_worker', $worker->id_worker)
                 ->where('no_month', $month)
                 ->first();
 
             $daysInMonth = Carbon::createFromDate(null, $month, 1)->daysInMonth;
-
-            if ($minPresence && $presenceCount < $minPresence->min_pres) {
+        
+            if ($presenceCount < $minPresence->min_pres) {
                 $adjustedWage = $worker->job->wage_job * $presenceCount / $daysInMonth;
             } else {
                 $adjustedWage = $worker->job->wage_job;
             }
+            $wages[$worker->id_worker]=$adjustedWage;
 
             $payroll += $adjustedWage;
         }
@@ -81,6 +86,7 @@ class ReportController extends Controller
             'payroll' => $payroll,
             'payrollData' => $payrollData,
             'profit' => $profit,
+            'wages' => $wages,
         ];
 
         // Return PDF
